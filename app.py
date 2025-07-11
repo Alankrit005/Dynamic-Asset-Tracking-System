@@ -85,50 +85,6 @@ def dashboard():
     </html>
     '''
     return render_template_string(html, rows=rows, columns=columns)
-@app.route('/asset/<asset_id>')
-def asset_detail(asset_id):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute("PRAGMA table_info(assets)")
-    columns = [col[1] for col in cursor.fetchall()]
-
-    cursor.execute("SELECT * FROM assets WHERE Asset_ID = ?", (asset_id,))
-    row = cursor.fetchone()
-    conn.close()
-
-    if not row:
-        return f"<h2>No asset found with ID: {asset_id}</h2>"
-
-    html = '''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Asset {{ asset_id }} Details</title>
-        <style>
-            body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
-            table { border-collapse: collapse; width: 100%; max-width: 600px; margin: auto; background: white; }
-            th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-            th { background-color: #4CAF50; color: white; }
-        </style>
-    </head>
-    <body>
-        <h2>🔍 Asset Details - ID: {{ asset_id }}</h2>
-        <table>
-            {% for col, val in data %}
-            <tr>
-                <th>{{ col }}</th>
-                <td>{{ val }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <br><a href="/dashboard">⬅ Back to Dashboard</a>
-    </body>
-    </html>
-    '''
-    data = list(zip(columns, row))
-    return render_template_string(html, asset_id=asset_id, data=data)
-
 
 @app.route('/scan', methods=['POST'])
 def scan_label():

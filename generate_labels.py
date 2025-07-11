@@ -26,7 +26,7 @@ def draw_label(asset_id):
     draw = ImageDraw.Draw(img)
 
     # QR Code with asset ID in URL
-    qr_url = f"{base_url}/asset/{asset_id}"
+    qr_url = f"{base_url}/?asset_id={asset_id}"
     qr = qrcode.make(qr_url)
     qr = qr.resize((100, 100))
     img.paste(qr, (10, 10))
