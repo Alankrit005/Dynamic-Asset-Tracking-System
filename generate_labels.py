@@ -13,17 +13,21 @@ if "Functional" not in df.columns:
 label_width = 300
 label_height = 220
 grid_labels = ["Calibrated", "In Use", "Maintenance", "Functional"]
-font_path = "arial.ttf"  # Change if needed
+font_path = "arial.ttf"  # Use system font or path to TTF if needed
 
 # Create output dir
 os.makedirs("labels", exist_ok=True)
+
+# Base URL of deployed app
+base_url = "https://dynamic-asset-tracking-app.onrender.com"
 
 def draw_label(asset_id):
     img = Image.new("RGB", (label_width, label_height), "white")
     draw = ImageDraw.Draw(img)
 
-    # QR Code
-    qr = qrcode.make(str(asset_id))
+    # QR Code with asset ID in URL
+    qr_url = f"{base_url}/?asset_id={asset_id}"
+    qr = qrcode.make(qr_url)
     qr = qr.resize((100, 100))
     img.paste(qr, (10, 10))
 
@@ -40,7 +44,7 @@ def draw_label(asset_id):
             label_index = i * 2 + j
             draw.text((x0 + 5, y0 + 12), grid_labels[label_index], fill="black")
 
-    # ID below
+    # Asset ID below
     draw.text((10, 120), f"Asset ID: {asset_id}", fill="black")
 
     return img
@@ -70,4 +74,4 @@ for p in range(pages):
         page.paste(label, (x, y))
     page.save(f"labels/page_{p+1}.png")
 
-print("✅ Labels generated in 'labels/' folder.")
+print("✅ Labels generated in 'labels/' folder with linked QR codes.")
